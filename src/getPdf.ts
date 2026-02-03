@@ -10,13 +10,18 @@ const extractPdfData = async () => {
     const buffer = await data.arrayBuffer();
     // Extract text using unpdf
     const result = await extractText(buffer)
-    return  result;
+    return result;
 
   }
-  catch(e){
+  catch (e) {
     console.log(e)
   }
 }
-export const data = await extractPdfData()
-export const rawData = data?.text.join("\n") || ""
-export const first = rawData.slice(rawData.indexOf("ITEM DETAILS"), rawData.length)
+const data = await extractPdfData()
+const rawData = data?.text.join("\n") || ""
+const cleaned = rawData
+  .replace(/\u0000/g, "")
+  .replace(/\r/g, "");
+export const first = cleaned.slice(0, rawData.indexOf("ITEM DETAILS"));
+export const Second = cleaned.slice(rawData.indexOf("ITEM DETAILS"), rawData.length);
+console.log(first)

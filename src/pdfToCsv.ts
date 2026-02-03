@@ -1,4 +1,4 @@
-import {  first, rawData } from "./getPdf";
+import { Second } from "./getPdf";
 
 type Product = {
     srNo: number;
@@ -12,16 +12,13 @@ type Product = {
 };
 
 export function extractProducts(text: string): Product[] {
-    const cleaned = text
-        .replace(/\u0000/g, "")
-        .replace(/\r/g, "");
 
     const productRegex =
         /(\d+)\s+([\s\S]*?)\n([A-Z]{2}\d{9})\s+(\d{8})\s+(\d+)\s+([\d.]+)\s+(\d+%)\s+([\d.]+)/g;
 
     const products: Product[] = [];
 
-    for (const match of cleaned.matchAll(productRegex)) {
+    for (const match of Second.matchAll(productRegex)) {
         const [
             ,
             srNo,
@@ -50,5 +47,5 @@ export function extractProducts(text: string): Product[] {
 
     return products;
 }
-const data = extractProducts(first);
+const data = extractProducts(Second);
 console.log(data)
