@@ -1,4 +1,4 @@
-import { rawData } from "./getPdf";
+import {  first, rawData } from "./getPdf";
 
 type Product = {
     srNo: number;
@@ -33,7 +33,7 @@ export function extractProducts(text: string): Product[] {
             discount,
             amount,
         ] = match;
-        // @ts-ignore
+      
         products.push({
             srNo: Number(srNo),
             description: description || ""
@@ -50,5 +50,5 @@ export function extractProducts(text: string): Product[] {
 
     return products;
 }
-const data = extractProducts(rawData);
+const data = extractProducts(first);
 console.log(data)

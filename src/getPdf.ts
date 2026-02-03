@@ -19,3 +19,4 @@ const extractPdfData = async () => {
 }
 export const data = await extractPdfData()
 export const rawData = data?.text.join("\n") || ""
+export const first = rawData.slice(rawData.indexOf("ITEM DETAILS"), rawData.length)
