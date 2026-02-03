@@ -1,6 +1,17 @@
 {
   "dependencies": {
-    "pdf-parse": "^2.4.5",
+    "": ".",
+    "csv-stringify": "^6.6.0",
     "unpdf": "^1.4.0"
+  },
+  "name": "pdf-to-csv",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }
