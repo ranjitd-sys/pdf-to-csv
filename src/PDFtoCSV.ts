@@ -12,6 +12,7 @@ const columns = [
   "rate",
   "discount",
   "amount",
+  "gstPercentage",
   "supplierName",
   "supplierAddress",
   "supplierEmail",
@@ -23,7 +24,7 @@ const columns = [
   "invoiceNumber",
   "invoiceDate",
   "billingPeriod",
-  "gstPercentage"
+  
 ];
 
 let  products = [];
@@ -40,6 +41,6 @@ const csv = stringify(products, {
   columns
 });
 
-await Bun.write("products.csv", csv);
+await Bun.write("../output/products.csv", csv);
 // console.log(products)
 
