@@ -1,13 +1,44 @@
-import { cons } from "effect/List";
 import { TabulerData } from "./TabullerSerilize";
 import { VendorDetils } from "./vendorSerilaize";
+import { stringify } from "csv-stringify/sync";
 
-let finalData = [];
+
+const columns = [
+  "srNo",
+  "description",
+  "orderNo",
+  "hsn",
+  "qty",
+  "rate",
+  "discount",
+  "amount",
+  "supplierName",
+  "supplierAddress",
+  "supplierEmail",
+  "supplierMobile",
+  "supplierGSTIN",
+  "receiverName",
+  "receiverAddress",
+  "receiverGSTIN",
+  "invoiceNumber",
+  "invoiceDate",
+  "billingPeriod",
+];
+
+let  products = [];
 for(let i in TabulerData){
-    finalData.push(
+    products.push(
         {
             ...TabulerData[i],...VendorDetils
         }
     )
 }
-console.log(finalData)
+
+const csv = stringify(products, {
+  header: true,
+  columns
+});
+
+await Bun.write("products.csv", csv);
+// console.log(products)
+
