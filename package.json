@@ -2,6 +2,7 @@
   "dependencies": {
     "": ".",
     "csv-stringify": "^6.6.0",
+    "effect": "^3.19.15",
     "unpdf": "^1.4.0"
   },
   "name": "pdf-to-csv",
