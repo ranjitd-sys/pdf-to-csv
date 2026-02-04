@@ -59,5 +59,4 @@ export function extractInvoiceParties(text: string): InvoiceParties {
   };
 }
 
-const invoidDetail = extractInvoiceParties(PDF?.first || "");
-console.log(invoidDetail)
+export const VendorDetils = extractInvoiceParties(PDF?.first || "");
