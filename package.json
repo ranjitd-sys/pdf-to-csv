@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "": ".",
+    "@effect/platform": "^0.94.2",
     "csv-stringify": "^6.6.0",
     "effect": "^3.19.15",
     "unpdf": "^1.4.0"

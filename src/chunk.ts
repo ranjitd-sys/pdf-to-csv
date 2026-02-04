@@ -1,9 +1,14 @@
+import { Effect } from "effect";
 import { extractText } from "unpdf";
+import { FileSystem } from "@effect/platform";
+import { PdfEctraError } from "./error";
+
+
 
 const extractPdfData = async () => {
   try {
     // Read the PDF file into a buffer
-    const data = Bun.file("../public/label.pdf");
+    const data = Bun.file("../publlc/label.pdf");
     const buffer = await data.arrayBuffer();
     // Extract text using unpdf
     const result = await extractText(buffer);
@@ -12,6 +17,21 @@ const extractPdfData = async () => {
     console.log(e);
   }
 };
+const EffectxractPdfData = Effect.gen(function* (){
+  const file = Bun.file("../public/label.pdf")
+
+  const buffer = yield* Effect.tryPromise({
+  try: () => file.arrayBuffer(),
+  catch:(e)=>new PdfEctraError(String(e))
+  });
+
+  const text = yield* Effect.tryPromise({
+    try: ()=> extractText(buffer),
+    catch: (e)=>new PdfEctraError(String(e))
+  })
+  return text;
+})
+
 async function ValidateAdnReturn() {
   const data = await extractPdfData();
   const rawData = data?.text.join("\n") || "";
@@ -39,3 +59,6 @@ async function GetpdfData() {
 };
 
 export const PDF = await GetpdfData();
+
+const effectData = Effect.runPromise(EffectxractPdfData);
+console.log(effectData)
