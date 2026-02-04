@@ -1,9 +1,3 @@
-import { file, listen, secrets } from "bun";
-import {
-  convertCompilerOptionsFromJson,
-  couldStartTrivia,
-  ExitStatus,
-} from "typescript";
 import { extractText } from "unpdf";
 
 const extractPdfData = async () => {
@@ -43,4 +37,4 @@ async function GetpdfData() {
   const {first, Second, third } = data
   return {first,Second,third}
 }
-export const PDF = await GetpdfData()
+export const PDF = await GetpdfData();
