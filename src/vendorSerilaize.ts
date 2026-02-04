@@ -1,4 +1,4 @@
-import { PDF } from "./convert";
+import { PDF } from "./convertAndChunk";
 type InvoiceParties = {
   supplierName: string | null;
   supplierAddress: string | null;
