@@ -16,9 +16,9 @@ async function ValidateAdnReturn() {
   const data = await extractPdfData();
   const rawData = data?.text.join("\n") || "";
   const cleaned = rawData.replace(/\u0000/g, "").replace(/\r/g, "");
-  const first = cleaned.slice(0, rawData.indexOf("ITEM DETAILS"));
-  const Second = cleaned.slice(rawData.indexOf("ITEM DETAILS"), rawData.indexOf("BILLING SUMMARY"));
-  const third =  cleaned.slice(rawData.indexOf("BILLING SUMMARY"), cleaned.length );
+  const first = cleaned.slice(0, cleaned.indexOf("ITEM DETAILS"));
+  const Second = cleaned.slice(cleaned.indexOf("ITEM DETAILS"), rawData.indexOf("BILLING SUMMARY"));
+  const third =  cleaned.slice(cleaned.indexOf("TOTAL"), cleaned.length );
 
   if(!cleaned.includes("ITEM DETAILS") && !cleaned.includes("BILLING SUMMARY")){
     console.log("dafds")
@@ -36,5 +36,6 @@ async function GetpdfData() {
   }
   const {first, Second, third } = data
   return {first,Second,third}
-}
+};
+
 export const PDF = await GetpdfData();

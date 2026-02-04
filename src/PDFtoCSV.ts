@@ -23,6 +23,7 @@ const columns = [
   "invoiceNumber",
   "invoiceDate",
   "billingPeriod",
+  "gstPercentage"
 ];
 
 let  products = [];
