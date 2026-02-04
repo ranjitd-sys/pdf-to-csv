@@ -1,4 +1,4 @@
-srNo,description,orderNo,hsn,qty,rate,discount,amount,gstPercentage,supplierName,supplierAddress,supplierEmail,supplierMobile,supplierGSTIN,receiverName,receiverAddress,receiverGSTIN,invoiceNumber,invoiceDate,billingPeriod
+S. No.,DESCRIPTION,ORDER NO,HSN CODE,QTN,RATE,DISC (%),Amount,GST %,Supplier Name,Supplier Address,Supplier Email,Contact Number,Supplier GSTIN,Reciever Name,Reciever Address,Reciever GSTIN,Invoice Number,Invoice Number,Billing Period
 1,"Natural Oval Coconut Shell Bowls-
 150ml (Set of 10)",BL202570505,14049030,1,499,34%,329.34,5.00%,Thenga,"Thenga, 2nd Floor, Manjali Building, CBE Road,
 Sultanpet, 678001",marketing@thengacoco.com,9633813926,32DSYPK4288M1ZR,Living Brown Private Limited,"401, Shanti Sadan , Chs Ltd , FP NO

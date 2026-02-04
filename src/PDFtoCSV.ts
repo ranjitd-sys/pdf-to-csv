@@ -3,28 +3,28 @@ import { VendorDetils } from "./vendorSerilaize";
 import { stringify } from "csv-stringify/sync";
 
 
+
 const columns = [
-  "srNo",
-  "description",
-  "orderNo",
-  "hsn",
-  "qty",
-  "rate",
-  "discount",
-  "amount",
-  "gstPercentage",
-  "supplierName",
-  "supplierAddress",
-  "supplierEmail",
-  "supplierMobile",
-  "supplierGSTIN",
-  "receiverName",
-  "receiverAddress",
-  "receiverGSTIN",
-  "invoiceNumber",
-  "invoiceDate",
-  "billingPeriod",
-  
+  { key: "srNo", header: "S. No." },
+  { key: "description", header: "DESCRIPTION" },
+  { key: "orderNo", header: "ORDER NO" },
+  { key: "hsn", header: "HSN CODE" },
+  { key: "qty", header: "QTN" },
+  { key: "rate", header: "RATE" },
+  { key: "discount", header: "DISC (%)" },
+  { key: "amount", header: "Amount" },
+  { key: "gstPercentage", header: "GST %" },
+  { key: "supplierName", header: "Supplier Name" },
+  { key: "supplierAddress", header: "Supplier Address" },
+  { key: "supplierEmail", header: "Supplier Email" },
+  { key: "supplierMobile", header: "Contact Number" },
+  { key: "supplierGSTIN", header: "Supplier GSTIN" },
+  { key: "receiverName", header: "Reciever Name" },
+  { key: "receiverAddress", header: "Reciever Address" },
+  { key: "receiverGSTIN", header: "Reciever GSTIN" },
+  { key: "invoiceNumber", header: "Invoice Number" },
+  { key: "invoiceDate", header: "Invoice Number" },
+  { key: "billingPeriod", header: "Billing Period" }
 ];
 
 let  products = [];

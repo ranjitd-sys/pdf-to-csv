@@ -60,5 +60,5 @@ function gstPercentage(text: string) {
   return {"gstPercentage":gstPercentae};
 }
 const gstDetial = gstPercentage(PDF?.third || "")
-const VenderSubDetails = extractInvoiceParties(PDF?.first || "");
+const VenderSubDetails = extractInvoiceParties(PDF?.first);
 export const VendorDetils = {...VenderSubDetails, ...gstDetial};

@@ -49,4 +49,4 @@ export function extractProducts(text: string): Product[] {
 }
 
 
-export const TabulerData = extractProducts(PDF?.Second || "");
+export const TabulerData = extractProducts(PDF.second || "");
