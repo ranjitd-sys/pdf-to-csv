@@ -1,4 +1,4 @@
-import { PDF } from "./convertAndChunk";
+import { PDF } from "./chunk";
 
 type Product = {
     srNo: number;

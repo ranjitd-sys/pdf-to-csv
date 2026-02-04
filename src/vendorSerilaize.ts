@@ -1,5 +1,5 @@
 import { cons } from "effect/List";
-import { PDF } from "./convertAndChunk";
+import { PDF } from "./chunk";
 type InvoiceParties = {
   supplierName: string | null;
   supplierAddress: string | null;
