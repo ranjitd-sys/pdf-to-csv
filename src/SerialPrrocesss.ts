@@ -1,4 +1,4 @@
-import { PDF } from "./getPdf";
+import { PDF } from "./convert";
 
 type Product = {
     srNo: number;

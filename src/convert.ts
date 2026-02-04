@@ -44,4 +44,3 @@ async function GetpdfData() {
   return {first,Second,third}
 }
 export const PDF = await GetpdfData()
-console.log(PDF)
