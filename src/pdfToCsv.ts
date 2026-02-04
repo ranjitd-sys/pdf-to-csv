@@ -1,4 +1,4 @@
-import { Second } from "./getPdf";
+import { PDF } from "./getPdf";
 
 type Product = {
     srNo: number;
@@ -12,13 +12,13 @@ type Product = {
 };
 
 export function extractProducts(text: string): Product[] {
-
+    
     const productRegex =
         /(\d+)\s+([\s\S]*?)\n([A-Z]{2}\d{9})\s+(\d{8})\s+(\d+)\s+([\d.]+)\s+(\d+%)\s+([\d.]+)/g;
 
     const products: Product[] = [];
 
-    for (const match of Second.matchAll(productRegex)) {
+    for (const match of text.matchAll(productRegex)) {
         const [
             ,
             srNo,
@@ -47,5 +47,7 @@ export function extractProducts(text: string): Product[] {
 
     return products;
 }
-const data = extractProducts(Second);
-console.log(data)
+
+
+export const TabulerData = extractProducts(PDF?.Second || "");
+console.log(TabulerData)
