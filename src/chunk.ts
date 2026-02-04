@@ -1,64 +1,56 @@
 import { Effect } from "effect";
 import { extractText } from "unpdf";
-import { FileSystem } from "@effect/platform";
+import { Effectify, FileSystem } from "@effect/platform";
 import { PdfEctraError } from "./error";
+import * as S from "@effect/schema/Schema";
+const InvoiceSchema = S.Struct({
+  first: S.String,
 
-
-
-const extractPdfData = async () => {
-  try {
-    // Read the PDF file into a buffer
-    const data = Bun.file("../publlc/label.pdf");
-    const buffer = await data.arrayBuffer();
-    // Extract text using unpdf
-    const result = await extractText(buffer);
-    return result;
-  } catch (e) {
-    console.log(e);
-  }
-};
-const EffectxractPdfData = Effect.gen(function* (){
-  const file = Bun.file("../public/label.pdf")
+  second: S.String.pipe(
+    S.filter((s) => s.includes("ITEM DETAILS"), {
+      message: () => "Your Invoice should contain ITEM DETAILS",
+    }),
+  ),
+  third: S.String.pipe(
+    S.filter((s) => s.includes("TOTAL"), {
+      message: () => "Your Invoce must contain Total",
+    }),
+  ),
+});
+const EffectxractPdfData = Effect.gen(function* () {
+  const file = Bun.file("../public/label.pdf");
 
   const buffer = yield* Effect.tryPromise({
-  try: () => file.arrayBuffer(),
-  catch:(e)=>new PdfEctraError(String(e))
+    try: () => file.arrayBuffer(),
+    catch: (e) => new PdfEctraError(String(e)),
   });
 
   const text = yield* Effect.tryPromise({
-    try: ()=> extractText(buffer),
-    catch: (e)=>new PdfEctraError(String(e))
-  })
+    try: () => extractText(buffer),
+    catch: (e) => new PdfEctraError(String(e)),
+  });
   return text;
-})
+});
 
-async function ValidateAdnReturn() {
-  const data = await extractPdfData();
-  const rawData = data?.text.join("\n") || "";
+
+export const effectValidateReturn = Effect.gen(function* () {
+  const data = yield* EffectxractPdfData;
+  const rawData = data.text.join("\n");
+
   const cleaned = rawData.replace(/\u0000/g, "").replace(/\r/g, "");
+
   const first = cleaned.slice(0, cleaned.indexOf("ITEM DETAILS"));
-  const Second = cleaned.slice(cleaned.indexOf("ITEM DETAILS"), rawData.indexOf("BILLING SUMMARY"));
-  const third =  cleaned.slice(cleaned.indexOf("TOTAL"), cleaned.length );
 
-  if(!cleaned.includes("ITEM DETAILS") && !cleaned.includes("BILLING SUMMARY")){
-    console.log("dafds")
-    return "Invlid Data"
-  }
-  return {
-    first, Second, third
-  }
-}
+  const second = cleaned.slice(
+    cleaned.indexOf("ITEM DETAILS"),
+    cleaned.indexOf("BILLING SUMMARY"),
+  );
 
-async function GetpdfData() {
-  const data = await ValidateAdnReturn();
-  if(data === "Invlid Data"){
-    return;
-  }
-  const {first, Second, third } = data
-  return {first,Second,third}
-};
+  const third = cleaned.slice(cleaned.indexOf("TOTAL"), cleaned.length);
+  const result = {first, second, third};
+  const validate = yield* S.decode(InvoiceSchema)(result);
 
-export const PDF = await GetpdfData();
-
+  return validate;
+});
 const effectData = Effect.runPromise(EffectxractPdfData);
-console.log(effectData)
+export const PDF = await Effect.runPromise(effectValidateReturn)
