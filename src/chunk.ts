@@ -1,11 +1,11 @@
-import { Effect } from "effect";
+import { Effect, pipe, Chunk } from "effect";
 import { extractText } from "unpdf";
-import { Effectify, FileSystem } from "@effect/platform";
 import { PdfEctraError } from "./error";
 import * as S from "@effect/schema/Schema";
+import { Option } from "effect";
+
 const InvoiceSchema = S.Struct({
   first: S.String,
-
   second: S.String.pipe(
     S.filter((s) => s.includes("ITEM DETAILS"), {
       message: () => "Your Invoice should contain ITEM DETAILS",
@@ -13,11 +13,16 @@ const InvoiceSchema = S.Struct({
   ),
   third: S.String.pipe(
     S.filter((s) => s.includes("TOTAL"), {
-      message: () => "Your Invoce must contain Total",
+      message: () => "Your Invoice must contain TOTAL",
     }),
   ),
 });
-const EffectxractPdfData = Effect.gen(function* () {
+
+// Type inference from schema
+type Invoice = S.Schema.Type<typeof InvoiceSchema>;
+
+// extract PDF
+const EffectExtractPdfData = Effect.gen(function* () {
   const file = Bun.file("../public/label.pdf");
 
   const buffer = yield* Effect.tryPromise({
@@ -32,25 +37,66 @@ const EffectxractPdfData = Effect.gen(function* () {
   return text;
 });
 
-
 export const effectValidateReturn = Effect.gen(function* () {
-  const data = yield* EffectxractPdfData;
+  const data = yield* EffectExtractPdfData;
+
   const rawData = data.text.join("\n");
 
-  const cleaned = rawData.replace(/\u0000/g, "").replace(/\r/g, "");
+  const lines = pipe(
+    rawData.split("\n"), // Split into lines first
+    Chunk.fromIterable,
+    Chunk.map((line) => line.replace(/\u0000/g, "").replace(/\r/g, "")),
+  );
+  
+  
 
-  const first = cleaned.slice(0, cleaned.indexOf("ITEM DETAILS"));
-
-  const second = cleaned.slice(
-    cleaned.indexOf("ITEM DETAILS"),
-    cleaned.indexOf("BILLING SUMMARY"),
+  const itemDetailsIdx = Chunk.findFirstIndex(lines, (line) =>
+    line.includes("ITEM DETAILS"),
   );
 
-  const third = cleaned.slice(cleaned.indexOf("TOTAL"), cleaned.length);
-  const result = {first, second, third};
-  const validate = yield* S.decode(InvoiceSchema)(result);
+  const billingIdx = Chunk.findFirstIndex(lines, (s) =>
+    s.includes("BILLING SUMMARY"),
+  );
 
-  return validate;
+  const totalIdx = Chunk.findFirstIndex(lines, (s) => s.includes("TOTAL"));
+
+  const indices = {
+    items: Option.getOrElse(itemDetailsIdx, () => 0),
+    billing: Option.getOrElse(billingIdx, () => Chunk.size(lines)),
+    totalIdx: Option.getOrElse(totalIdx, () => Chunk.size(lines))
+  };
+
+  
+
+  // Extract sections
+  const first = pipe(
+    lines, 
+    Chunk.take(indices.items), 
+    Chunk.join("\n")
+  );
+  
+  const second = pipe(
+    lines, 
+    Chunk.drop(indices.items),
+    Chunk.take(indices.billing - indices.items),
+    Chunk.join("\n")
+  );
+  
+  const third = pipe(
+    lines, 
+    Chunk.drop(indices.totalIdx), 
+    Chunk.join("\n")
+  );
+
+  const result = { first, second, third };
+  
+  
+  // Decode and validate with schema
+  return yield* S.decode(InvoiceSchema)(result);
 });
-const effectData = Effect.runPromise(EffectxractPdfData);
-export const PDF = await Effect.runPromise(effectValidateReturn)
+
+// Run and get validated result
+export const PDF = await Effect.runPromise(effectValidateReturn);
+
+// Now PDF is properly typed as Invoice
+console.log(PDF.second)
