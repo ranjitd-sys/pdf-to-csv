@@ -2,8 +2,6 @@ import { TabulerData } from "./TabullerSerilize";
 import { VendorDetils } from "./vendorSerilaize";
 import { stringify } from "csv-stringify/sync";
 
-
-
 const columns = [
   { key: "srNo", header: "S. No." },
   { key: "description", header: "DESCRIPTION" },

@@ -43,7 +43,7 @@ export const effectValidateReturn = Effect.gen(function* () {
   const rawData = data.text.join("\n");
 
   const lines = pipe(
-    rawData.split("\n"), // Split into lines first
+    rawData.split("\n"), 
     Chunk.fromIterable,
     Chunk.map((line) => line.replace(/\u0000/g, "").replace(/\r/g, "")),
   );
@@ -68,7 +68,7 @@ export const effectValidateReturn = Effect.gen(function* () {
 
   
 
-  // Extract sections
+  
   const first = pipe(
     lines, 
     Chunk.take(indices.items), 
