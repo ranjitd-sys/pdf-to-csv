@@ -18,10 +18,8 @@ const InvoiceSchema = S.Struct({
   ),
 });
 
-// Type inference from schema
 type Invoice = S.Schema.Type<typeof InvoiceSchema>;
 
-// extract PDF
 const EffectExtractPdfData = Effect.gen(function* () {
   const file = Bun.file("../public/label.pdf");
 
@@ -66,7 +64,6 @@ export const effectValidateReturn = Effect.gen(function* () {
     totalIdx: Option.getOrElse(totalIdx, () => Chunk.size(lines))
   };
 
-  
 
   
   const first = pipe(
@@ -91,12 +88,9 @@ export const effectValidateReturn = Effect.gen(function* () {
   const result = { first, second, third };
   
   
-  // Decode and validate with schema
   return yield* S.decode(InvoiceSchema)(result);
 });
 
-// Run and get validated result
-export const PDF = await Effect.runPromise(effectValidateReturn);
 
-// Now PDF is properly typed as Invoice
+export const PDF = await Effect.runPromise(effectValidateReturn);
 console.log(PDF.second)
