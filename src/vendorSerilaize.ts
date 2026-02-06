@@ -1,6 +1,6 @@
 import { cons } from "effect/List";
 import { PDF } from "./chunk";
-import { Schema } from "effect";
+import { Effect, Schema } from "effect";
 const InvoicePartiesSchema = Schema.Struct({
   supplierName: Schema.NullOr(Schema.String),
   supplierAddress: Schema.NullOr(Schema.String),
@@ -17,7 +17,7 @@ const InvoicePartiesSchema = Schema.Struct({
 });
 
 
-export function extractInvoiceParties(text: string) {
+export const  extractInvoiceParties =  (text: string) => Effect.gen( function* () {
   const clean = text
     .replace(/\u0000/g, "")
     .replace(/\r/g, "")
@@ -28,7 +28,7 @@ export function extractInvoiceParties(text: string) {
 
   return {
     // ---------------- SUPPLIER ----------------
-    supplierName: match(/^([A-Za-z0-9 &.-]+)\n/i),
+    supplierName:  match(/^([A-Za-z0-9 &.-]+)\n/i),
 
     supplierAddress: match(/^[A-Za-z0-9 &.-]+\n([\s\S]*?)\nEmail:/i),
 
@@ -54,7 +54,8 @@ export function extractInvoiceParties(text: string) {
 
     billingPeriod: match(/Billing Period:\s*([^\n]+)/i),
   };
-}
+}).pipe(Effect.withSpan("vendor serirlizes"))
+
 function gstPercentage(text: string) {
   const match = text.match(/-\s*(\d+(?:\.\d+)?%)/);
   const gstPercentae = match?.[1]; // "5.00%"
