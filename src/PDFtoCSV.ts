@@ -1,3 +1,4 @@
+import { Effect } from "effect";
 import { TabulerData } from "./TabullerSerilize";
 import { VendorDetils } from "./vendorSerilaize";
 import { stringify } from "csv-stringify/sync";
@@ -22,23 +23,24 @@ const columns = [
   { key: "receiverGSTIN", header: "Reciever GSTIN" },
   { key: "invoiceNumber", header: "Invoice Number" },
   { key: "invoiceDate", header: "Invoice Number" },
-  { key: "billingPeriod", header: "Billing Period" }
+  { key: "billingPeriod", header: "Billing Period" },
 ];
 
-let  products = [];
-for(let i in TabulerData){
-    products.push(
-        {
-            ...TabulerData[i],...VendorDetils
-        }
-    )
-}
+export const convertToCSV = () =>
+  Effect.gen(function* () {
+    let products = [];
+    for (let i in TabulerData) {
+      products.push({
+        ...TabulerData[i],
+        ...VendorDetils,
+      });
+    }
 
-const csv = stringify(products, {
-  header: true,
-  columns
-});
+    const csv = stringify(products, {
+      header: true,
+      columns,
+    });
 
-await Bun.write("../output/products.csv", csv);
+    yield* Effect.tryPromise(() => Bun.write("../output/products.csv", csv));
+  });
 // console.log(products)
-

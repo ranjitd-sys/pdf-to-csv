@@ -6,6 +6,7 @@ import { effectValidateReturn } from "./chunk";
 import { EffectExtractPdfData } from "./chunk";
 import { extractInvoiceParties } from "./vendorSerilaize";
 import { extractProducts } from "./TabullerSerilize";
+import { convertToCSV } from "./PDFtoCSV";
 
 const NodeSdkLive = NodeSdk.layer(() => ({
   resource: { serviceName: "Pdf-to-csv" },
@@ -14,25 +15,19 @@ const NodeSdkLive = NodeSdk.layer(() => ({
 
 const program = Effect.gen(function* () {
   yield* Effect.gen(function* () {
-    
     // 1. Run validation and wrap it in a span
-    const { first,second } = yield* effectValidateReturn.pipe(
-      Effect.withSpan("validate-return-PARENT")
+    const { first, second } = yield* effectValidateReturn.pipe(
+      Effect.withSpan("validate-return-PARENT"),
     );
 
     yield* Effect.sleep(Duration.millis(5));
 
-
-    yield* extractInvoiceParties(first).pipe(
-      Effect.withSpan("Vender Data")
-    );
-
-    yield* extractProducts(second).pipe(
-      Effect.withSpan("Tabuler Data")
-    );
-    
-
-  }).pipe(Effect.withSpan("pdf-processing-root"));
+    yield* extractInvoiceParties(first).pipe(Effect.withSpan("Vender Data"));
+    yield* Effect.sleep(Duration.millis(10));
+    yield* extractProducts(second).pipe(Effect.withSpan("Tabuler Data"));
+    yield* Effect.sleep(Duration.millis(10));
+    yield*convertToCSV().pipe(Effect.withSpan("Final CSV"))
+  });
 });
 
 Effect.runPromise(
