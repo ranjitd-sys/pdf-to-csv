@@ -1,21 +1,23 @@
 import { cons } from "effect/List";
 import { PDF } from "./chunk";
-type InvoiceParties = {
-  supplierName: string | null;
-  supplierAddress: string | null;
-  supplierEmail: string | null;
-  supplierMobile: string | null;
-  supplierGSTIN: string | null;
+import { Schema } from "effect";
+const InvoicePartiesSchema = Schema.Struct({
+  supplierName: Schema.NullOr(Schema.String),
+  supplierAddress: Schema.NullOr(Schema.String),
+  supplierEmail: Schema.NullOr(Schema.String),
+  supplierMobile: Schema.NullOr(Schema.String),
+  supplierGSTIN: Schema.NullOr(Schema.String),
+  receiverName: Schema.NullOr(Schema.String),
+  receiverAddress: Schema.NullOr(Schema.String),
+  receiverGSTIN: Schema.NullOr(Schema.String),
+  invoiceNumber: Schema.NullOr(Schema.String),
+  invoiceDate: Schema.NullOr(Schema.String),
+  billingPeriod: Schema.NullOr(Schema.String),
+  gstPercentage: Schema.NullOr(Schema.String),
+});
 
-  receiverName: string | null;
-  receiverAddress: string | null;
-  receiverGSTIN: string | null;
-  invoiceNumber: string | null;
-  invoiceDate: string | null;
-  billingPeriod: string | null;
-};
 
-export function extractInvoiceParties(text: string): InvoiceParties {
+export function extractInvoiceParties(text: string) {
   const clean = text
     .replace(/\u0000/g, "")
     .replace(/\r/g, "")

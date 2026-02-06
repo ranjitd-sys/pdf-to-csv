@@ -4,8 +4,11 @@ import { PdfEctraError } from "./error";
 import * as S from "@effect/schema/Schema";
 import { Option } from "effect";
 
+export type Invoice = S.Schema.Type<typeof InvoiceSchema>;
+
 const InvoiceSchema = S.Struct({
   first: S.String,
+
   second: S.String.pipe(
     S.filter((s) => s.includes("ITEM DETAILS"), {
       message: () => "Your Invoice should contain ITEM DETAILS",
@@ -18,7 +21,6 @@ const InvoiceSchema = S.Struct({
   ),
 });
 
-type Invoice = S.Schema.Type<typeof InvoiceSchema>;
 
 const EffectExtractPdfData = Effect.gen(function* () {
   const file = Bun.file("../public/label.pdf");
@@ -37,7 +39,6 @@ const EffectExtractPdfData = Effect.gen(function* () {
 
 export const effectValidateReturn = Effect.gen(function* () {
   const data = yield* EffectExtractPdfData;
-
   const rawData = data.text.join("\n");
 
   const lines = pipe(
@@ -46,8 +47,6 @@ export const effectValidateReturn = Effect.gen(function* () {
     Chunk.map((line) => line.replace(/\u0000/g, "").replace(/\r/g, "")),
   );
   
-  
-
   const itemDetailsIdx = Chunk.findFirstIndex(lines, (line) =>
     line.includes("ITEM DETAILS"),
   );
@@ -86,7 +85,6 @@ export const effectValidateReturn = Effect.gen(function* () {
   );
 
   const result = { first, second, third };
-  
   
   return yield* S.decode(InvoiceSchema)(result);
 });

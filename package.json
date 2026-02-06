@@ -1,20 +1,15 @@
 {
+  "name": "pdf-otel-minimal",
+  "type": "module",
   "dependencies": {
     "": ".",
-    "@effect/platform": "^0.94.2",
-    "@effect/schema": "^0.75.5",
-    "csv-stringify": "^6.6.0",
-    "effect": "^3.19.15",
-    "unpdf": "^1.4.0"
-  },
-  "name": "pdf-to-csv",
-  "module": "index.ts",
-  "type": "module",
-  "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
+    "@effect/schema": "^0.68.0",
+    "@opentelemetry/api": "^1.8.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.51.0",
+    "@opentelemetry/resources": "^1.24.0",
+    "@opentelemetry/sdk-node": "^0.51.0",
+    "@opentelemetry/semantic-conventions": "^1.24.0",
+    "effect": "^3.0.0",
+    "unpdf": "^0.11.0"
   }
 }
