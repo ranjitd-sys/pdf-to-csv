@@ -1,3 +1,4 @@
+import { Effect } from "effect";
 import { PDF } from "./chunk";
 
 type Product = {
@@ -11,7 +12,9 @@ type Product = {
     amount: number;
 };
 
-export function extractProducts(text: string): Product[] {
+export const extractProducts = (text: string) => Effect.gen(function* () {
+
+ 
     
     const productRegex =
         /(\d+)\s+([\s\S]*?)\n([A-Z]{2}\d{9})\s+(\d{8})\s+(\d+)\s+([\d.]+)\s+(\d+%)\s+([\d.]+)/g;
@@ -46,7 +49,7 @@ export function extractProducts(text: string): Product[] {
     }
 
     return products;
-}
 
+})
 
-export const TabulerData = extractProducts(PDF.second || "");
+export const TabulerData = await Effect.runPromise( extractProducts(PDF.second || ""));

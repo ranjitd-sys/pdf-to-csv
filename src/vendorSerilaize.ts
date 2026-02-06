@@ -1,6 +1,9 @@
-import { cons } from "effect/List";
 import { PDF } from "./chunk";
-import { Effect, Schema } from "effect";
+import {  Schema } from "effect";
+import { Effect } from "effect";
+
+
+import { first } from "./test";
 const InvoicePartiesSchema = Schema.Struct({
   supplierName: Schema.NullOr(Schema.String),
   supplierAddress: Schema.NullOr(Schema.String),
@@ -17,44 +20,37 @@ const InvoicePartiesSchema = Schema.Struct({
 });
 
 
-export const  extractInvoiceParties =  (text: string) => Effect.gen( function* () {
+export const extractInvoiceParties = (text:string) => Effect.gen(function* () {
+
+
   const clean = text
     .replace(/\u0000/g, "")
     .replace(/\r/g, "")
     .replace(/\n+/g, "\n")
-    .trim();
+    .trim()
 
-  const match = (regex: RegExp) => clean.match(regex)?.[1]?.trim() ?? null;
+  const match = (regex: RegExp) =>
+    clean.match(regex)?.[1]?.trim() ?? null
 
   return {
-    // ---------------- SUPPLIER ----------------
-    supplierName:  match(/^([A-Za-z0-9 &.-]+)\n/i),
-
+    supplierName: match(/^([A-Za-z0-9 &.-]+)\n/i),
     supplierAddress: match(/^[A-Za-z0-9 &.-]+\n([\s\S]*?)\nEmail:/i),
-
     supplierEmail: match(/Email:\s*([^\n]+)/i),
-
     supplierMobile: match(/Phone:\s*([0-9]+)/i),
-
     supplierGSTIN: match(/GSTIN:\s*([A-Z0-9]+)/i),
 
-    // ---------------- RECEIVER ----------------
     receiverName: match(/Party’s Details:\s*\nName:\s*([^\n]+)/i),
-
     receiverAddress: match(
-      /Party’s Details:[\s\S]*?Address:\s*([\s\S]*?)\nGSTIN:/i,
+      /Party’s Details:[\s\S]*?Address:\s*([\s\S]*?)\nGSTIN:/i
     ),
-
     receiverGSTIN: match(/Party’s Details:[\s\S]*?GSTIN:\s*([A-Z0-9]+)/i),
 
-    // ---------------- INVOICE ----------------
     invoiceNumber: match(/Invoice Number:\s*([A-Z0-9-]+)/i),
-
     invoiceDate: match(/Invoice Date:\s*([0-9-]+)/i),
-
     billingPeriod: match(/Billing Period:\s*([^\n]+)/i),
-  };
-}).pipe(Effect.withSpan("vendor serirlizes"))
+  }
+})
+
 
 function gstPercentage(text: string) {
   const match = text.match(/-\s*(\d+(?:\.\d+)?%)/);
@@ -62,6 +58,11 @@ function gstPercentage(text: string) {
 
   return {"gstPercentage":gstPercentae};
 }
+
+
 const gstDetial = gstPercentage(PDF?.third || "")
-const VenderSubDetails = extractInvoiceParties(PDF?.first);
+const VenderSubDetails =await Effect.runPromise(extractInvoiceParties(PDF.first));
 export const VendorDetils = {...VenderSubDetails, ...gstDetial};
+
+
+

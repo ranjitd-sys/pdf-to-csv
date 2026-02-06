@@ -34,7 +34,7 @@ export const EffectExtractPdfData = Effect.gen(function* () {
   });
 
   return text;
-}).pipe(Effect.withSpan("getData"))
+}).pipe(Effect.withSpan("get Data"))
 
 export const effectValidateReturn = Effect.gen(function* () {
   const data = yield* EffectExtractPdfData;
@@ -76,7 +76,7 @@ export const effectValidateReturn = Effect.gen(function* () {
   const result = { first, second, third };
 
   return yield* S.decode(InvoiceSchema)(result);
-}).pipe(Effect.withSpan("Validate"))
+})
 
 
 
