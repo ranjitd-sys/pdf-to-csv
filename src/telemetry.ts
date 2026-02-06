@@ -20,14 +20,13 @@ const program = Effect.gen(function* () {
       Effect.withSpan("validate-return-PARENT"),
     );
 
-    yield* Effect.sleep(Duration.millis(5));
 
     yield* extractInvoiceParties(first).pipe(Effect.withSpan("Vender Data"));
-    yield* Effect.sleep(Duration.millis(10));
+
     yield* extractProducts(second).pipe(Effect.withSpan("Tabuler Data"));
-    yield* Effect.sleep(Duration.millis(10));
+
     yield*convertToCSV().pipe(Effect.withSpan("Final CSV"))
-  });
+  }).pipe(Effect.withSpan("pdf-processing-root"));
 });
 
 Effect.runPromise(
